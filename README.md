@@ -11,9 +11,16 @@ This repo holds the recipe only. Binaries stay out of git and are checked by has
 
 | Artifact | Size | Hash |
 | --- | --- | --- |
-| Image `vllm-orin:0.29` | 16.3 GB (smaller as `.tar.zst`) | image ID in `artifacts.lock.json` |
+| Image `ghcr.io/hunterzhongme/vllm-orin:0.29` | 16.3 GB | image ID in `artifacts.lock.json` |
 | vLLM wheel | 126 MB | `artifacts.lock.json` |
 | `docker/wheels/` (full offline wheel closure for the image build) | 1.5 GB | `docker/wheels.sha256` |
+
+The image already contains the vLLM wheel and all of `docker/wheels/` (in `/build/wheels`),
+so the image is the only binary that needs storing. To recover the wheels for a rebuild:
+
+```bash
+docker create --name w vllm-orin:0.29 && docker cp w:/build/wheels docker/wheels && docker rm w
+```
 | Model `cyankiwi/Qwen3.6-35B-A3B-AWQ-4bit` | 24 GB | HF revision in `profiles/` |
 
 The original working machine keeps everything under `/mnt/ros_data/vllm29` (build tree) and
@@ -21,19 +28,31 @@ The original working machine keeps everything under `/mnt/ros_data/vllm29` (buil
 
 ## Deploying to another Orin
 
-The normal path is to copy the built image. Rebuilding the wheel takes hours.
+The image is pulled from ghcr.io. Rebuilding the wheel takes hours.
 
 ```bash
-# On the source Orin
+git clone https://github.com/hunterzhongME/vllm-jetson-orin && cd vllm-jetson-orin
+scripts/check-host.sh
+
+# Needs a classic PAT with read:packages (ghcr rejects GitHub CLI login tokens).
+# Paste it into a file with an editor; in vim, press i before pasting.
+docker login ghcr.io -u hunterzhongme --password-stdin < ~/.ghcr.pat && rm ~/.ghcr.pat
+docker pull ghcr.io/hunterzhongme/vllm-orin:0.29
+docker tag ghcr.io/hunterzhongme/vllm-orin:0.29 vllm-orin:0.29
+
+scripts/fetch-model.sh                          # 24 GB from Hugging Face at the pinned revision
+scripts/serve.sh                                # qwen3.6-35b-a3b on :8091
+```
+
+Without registry or Hugging Face access, copy from an Orin that already has them:
+
+```bash
 scripts/export-image.sh /mnt/ros_data          # → vllm-orin-0.29.tar.zst + .sha256
 rsync -P /mnt/ros_data/vllm-orin-0.29.tar.zst* target:/mnt/ros_data/
 rsync -aP /mnt/ros_data/hf/hub/models--cyankiwi--Qwen3.6-35B-A3B-AWQ-4bit target:/mnt/ros_data/hf/hub/
-
-# On the target
-scripts/check-host.sh
+# on the target
 (cd /mnt/ros_data && sha256sum -c vllm-orin-0.29.tar.zst.sha256)
 zstd -dc /mnt/ros_data/vllm-orin-0.29.tar.zst | docker load
-scripts/serve.sh                                # qwen3.6-35b-a3b on :8091
 ```
 
 Copy only the model you serve. The whole `/mnt/ros_data/hf` is over 200 GB.
@@ -72,8 +91,7 @@ with `--entrypoint vllm`.
 
 The build is fully offline. Every wheel comes from `docker/wheels/`, because the Jetson pip
 index can't be reached through the proxy from inside a build container. Put the wheels there
-(from the original Orin's `/mnt/ros_data/vllm29/docker/wheels` or from the release assets)
-and verify them before building:
+(extract them from the image as shown above) and verify them before building:
 
 ```bash
 cd docker && sha256sum -c wheels.sha256 && docker build -t vllm-orin:0.29 .
