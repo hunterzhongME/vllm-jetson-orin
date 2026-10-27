@@ -1,6 +1,8 @@
 {
   "image": {
     "tag": "vllm-orin:0.29",
+    "registry": "ghcr.io/hunterzhongme/vllm-orin:0.29",
+    "digest": "sha256:f410a1d6eb6dce9c6e5e79d073b8f91063eb349074545433e01700505af4a44e",
     "id": "sha256:0743c963efe39a83d8bdf5d55b82d25b704231f5ffcbcf269d806cea4d613228",
     "built": "2026-09-28",
     "base": "nvcr.io/nvidia/l4t-jetpack:r36.4.0"

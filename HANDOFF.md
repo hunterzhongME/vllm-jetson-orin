@@ -20,7 +20,7 @@ curl --noproxy '*' localhost:8091/v1/models
 ## State as of the handoff
 
 - Repo: `https://github.com/hunterzhongME/vllm-jetson-orin` (private).
-- Image: `ghcr.io/hunterzhongme/vllm-orin:0.29` (private package, ~16 GB). The image ID is in
+- Image: `ghcr.io/hunterzhongme/vllm-orin:0.29` (private package, 16.3 GB, 9.5 GB compressed). The image ID is in
   `artifacts.lock.json`.
 - The original Orin keeps the build tree in `/mnt/ros_data/vllm29` and the models in
   `/mnt/ros_data/hf`. It can be the rsync source if ghcr.io or Hugging Face can't be reached.
@@ -41,8 +41,8 @@ curl --noproxy '*' localhost:8091/v1/models
    docker pull ghcr.io/hunterzhongme/vllm-orin:0.29
    docker tag ghcr.io/hunterzhongme/vllm-orin:0.29 vllm-orin:0.29
    ```
-   Check that `docker image inspect vllm-orin:0.29 --format '{{.Id}}'` matches `image.id` in
-   `artifacts.lock.json`.
+   Check that the `Digest:` printed by `docker pull` matches `image.digest` in
+   `artifacts.lock.json`. The download is about 9.5 GB compressed.
 5. **Get the model:** run `scripts/fetch-model.sh` (24 GB). If Hugging Face can't be reached,
    rsync `hub/models--cyankiwi--Qwen3.6-35B-A3B-AWQ-4bit` from the original Orin instead.
 6. **Start the server:** run `scripts/serve.sh`. It waits until the model is listed (up to 25
