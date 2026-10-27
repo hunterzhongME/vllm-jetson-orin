@@ -26,6 +26,8 @@ docker create --name w vllm-orin:0.29 && docker cp w:/build/wheels docker/wheels
 The original working machine keeps everything under `/mnt/ros_data/vllm29` (build tree) and
 `/mnt/ros_data/hf` (models).
 
+For a step-by-step setup by a coding agent, see [HANDOFF.md](HANDOFF.md).
+
 ## Deploying to another Orin
 
 The image is pulled from ghcr.io. Rebuilding the wheel takes hours.
