@@ -1,0 +1,5 @@
+# Binaries live outside git; hashes are in artifacts.lock.json and docker/wheels.sha256.
+docker/wheels/
+*.whl
+*.tar
+*.tar.zst

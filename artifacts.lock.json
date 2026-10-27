@@ -1,0 +1,21 @@
+{
+  "image": {
+    "tag": "vllm-orin:0.29",
+    "id": "sha256:0743c963efe39a83d8bdf5d55b82d25b704231f5ffcbcf269d806cea4d613228",
+    "built": "2026-09-28",
+    "base": "nvcr.io/nvidia/l4t-jetpack:r36.4.0"
+  },
+  "vllm_wheel": {
+    "file": "vllm-0.29.0+jetson.sm87.cu126-cp310-cp310-linux_aarch64.whl",
+    "sha256": "46cec9ab17388287d5d13bd69f2e932a6aaca2d24b3557f22882c8500d7094af"
+  },
+  "docker_wheels": "docker/wheels.sha256",
+  "sources": {
+    "vllm": "98dff2a81d747d1dba01a47f939f48c3526d4206",
+    "flash-attention": "06bdd47c0d0383daf6a2ff0c418faff9c6da16e5",
+    "flash-attention/csrc/cutlass": "62750a2b75c802660e4894434dc55e839f322277"
+  },
+  "models": {
+    "cyankiwi/Qwen3.6-35B-A3B-AWQ-4bit": "00fcea2d3bcf5389b518d4fc082e5590e0ba4844"
+  }
+}

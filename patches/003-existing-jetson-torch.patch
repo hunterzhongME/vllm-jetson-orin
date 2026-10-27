@@ -1,0 +1,204 @@
+diff --git a/pyproject.toml b/pyproject.toml
+index d689d50..00e7ddb 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -7,7 +7,6 @@ requires = [
+     "setuptools>=77.0.3,<81.0.0",
+     "setuptools-scm>=8.0",
+     "setuptools-rust>=1.9.0",
+-    "torch == 2.13.0",
+     "wheel",
+     "jinja2",
+ ]
+diff --git a/requirements/build/cpu.txt b/requirements/build/cpu.txt
+index 5a03960..c84d12a 100644
+--- a/requirements/build/cpu.txt
++++ b/requirements/build/cpu.txt
+@@ -4,8 +4,6 @@ packaging>=24.2
+ setuptools==77.0.3 # this version can reuse CMake build dir
+ setuptools-scm>=8
+ setuptools-rust>=1.9.0
+-torch==2.13.0+cpu; platform_machine == "x86_64" or platform_machine == "s390x" or platform_machine == "aarch64"
+-torch==2.13.0; platform_system == "Darwin" or platform_machine == "ppc64le"  or platform_machine == "riscv64"
+ wheel
+ jinja2>=3.1.6
+ regex
+diff --git a/requirements/build/cuda.txt b/requirements/build/cuda.txt
+index d9d6802..5f36da6 100644
+--- a/requirements/build/cuda.txt
++++ b/requirements/build/cuda.txt
+@@ -5,7 +5,6 @@ packaging>=24.2
+ setuptools>=77.0.3,<81.0.0
+ setuptools-scm>=8
+ setuptools-rust>=1.9.0
+-torch==2.13.0
+ wheel
+ jinja2>=3.1.6
+ regex
+diff --git a/requirements/build/rock.txt b/requirements/build/rock.txt
+index ae4697e..bf256e9 100644
+--- a/requirements/build/rock.txt
++++ b/requirements/build/rock.txt
+@@ -3,9 +3,6 @@
+ 
+ 
+ --extra-index-url https://repo.amd.com/rocm/whl-multi-arch/
+-torch==2.12.0+rocm7.14.0
+-torchvision==0.27.0+rocm7.14.0
+-torchaudio==2.11.0+rocm7.14.0
+ triton==3.7.1+git0263a6a6.rocm7.14.0
+ cmake>=3.26.1,<4
+ packaging>=26.2
+diff --git a/requirements/build/rocm.txt b/requirements/build/rocm.txt
+index aedfa66..47f91e5 100644
+--- a/requirements/build/rocm.txt
++++ b/requirements/build/rocm.txt
+@@ -3,9 +3,6 @@
+ 
+ 
+ --extra-index-url https://repo.amd.com/rocm/whl-multi-arch/
+-torch==2.12.0+rocm7.14.0
+-torchvision==0.27.0+rocm7.14.0
+-torchaudio==2.11.0+rocm7.14.0
+ triton==3.7.1+git0263a6a6
+ cmake>=3.26.1,<4
+ packaging>=26.2
+diff --git a/requirements/build/tpu.txt b/requirements/build/tpu.txt
+index 1a791a6..1a88bfb 100644
+--- a/requirements/build/tpu.txt
++++ b/requirements/build/tpu.txt
+@@ -4,5 +4,4 @@ ninja
+ setuptools>=77.0.3,<81.0.0
+ setuptools-scm>=8
+ setuptools-rust>=1.9.0
+-torch==2.13.0+cpu
+ wheel
+diff --git a/requirements/cpu.txt b/requirements/cpu.txt
+index 30e47a8..a9fdf50 100644
+--- a/requirements/cpu.txt
++++ b/requirements/cpu.txt
+@@ -6,8 +6,6 @@ setuptools==77.0.3 # this version can reuse CMake build dir
+ numba == 0.65.0; platform_machine != "s390x" # Required for N-gram speculative decoding
+ 
+ # Dependencies for CPUs
+-torch==2.13.0+cpu; platform_machine == "x86_64" or platform_machine == "s390x" or platform_machine == "aarch64"
+-torch==2.13.0; platform_system == "Darwin" or platform_machine == "ppc64le" or platform_machine == "riscv64"
+ 
+ # required for the image processor of minicpm-o-2_6, this must be updated alongside torch
+ torchaudio; platform_machine != "s390x" and platform_machine != "riscv64"
+diff --git a/requirements/cuda.txt b/requirements/cuda.txt
+index ffcff13..0534968 100644
+--- a/requirements/cuda.txt
++++ b/requirements/cuda.txt
+@@ -4,10 +4,7 @@
+ numba == 0.65.0 # Required for N-gram speculative decoding
+ 
+ # Dependencies for NVIDIA GPUs
+-torch==2.13.0
+-torchaudio==2.11.0
+ # These must be updated alongside torch
+-torchvision==0.28.0 # Required for phi3v processor. See https://github.com/pytorch/vision?tab=readme-ov-file#installation for corresponding version
+ torchcodec >= 0.14
+ PyNvVideoCodec==2.0.4
+ # FlashInfer should be updated together with the Dockerfile
+diff --git a/requirements/test/cpu.txt b/requirements/test/cpu.txt
+index b1de63c..ab6ad9e 100644
+--- a/requirements/test/cpu.txt
++++ b/requirements/test/cpu.txt
+@@ -1118,7 +1118,6 @@ tokenizers==0.22.2
+     #   -r requirements/test/cuda.in
+     #   cohere
+     #   transformers
+-torch==2.13.0+cpu
+     # via
+     #   -r requirements/test/cuda.in
+     #   accelerate
+@@ -1139,14 +1138,12 @@ torch==2.13.0+cpu
+     #   xgrammar
+ torch-abi-audit==0.0.1
+     # via -r requirements/test/cuda.in
+-torchaudio==2.11.0+cpu
+     # via
+     #   -r requirements/test/cuda.in
+     #   encodec
+     #   vocos
+ torchcodec==0.14.0+cpu
+     # via -r requirements/test/cuda.in
+-torchvision==0.28.0+cpu
+     # via
+     #   -r requirements/test/cuda.in
+     #   open-clip-torch
+diff --git a/requirements/test/cuda.in b/requirements/test/cuda.in
+index 9317a45..8e5a73e 100644
+--- a/requirements/test/cuda.in
++++ b/requirements/test/cuda.in
+@@ -28,9 +28,6 @@ soundfile # required for audio tests
+ jiwer # required for audio tests
+ tblib # for pickling test exceptions
+ timm >=1.0.17 # required for internvl and gemma3n-mm test
+-torch==2.13.0
+-torchaudio==2.11.0
+-torchvision==0.28.0
+ transformers_stream_generator # required for qwen-vl test
+ matplotlib # required for qwen-vl test
+ mistral_common[image,audio] >= 1.11.6 # required for voxtral test
+diff --git a/requirements/test/cuda.txt b/requirements/test/cuda.txt
+index e59f340..205dc19 100644
+--- a/requirements/test/cuda.txt
++++ b/requirements/test/cuda.txt
+@@ -1218,7 +1218,6 @@ tokenizers==0.22.2
+     #   -r requirements/test/cuda.in
+     #   cohere
+     #   transformers
+-torch==2.13.0+cu130
+     # via
+     #   -c requirements/cuda.txt
+     #   -r requirements/test/cuda.in
+@@ -1240,7 +1239,6 @@ torch==2.13.0+cu130
+     #   xgrammar
+ torch-abi-audit==0.0.1
+     # via -r requirements/test/cuda.in
+-torchaudio==2.11.0+cu130
+     # via
+     #   -c requirements/cuda.txt
+     #   -r requirements/test/cuda.in
+@@ -1250,7 +1248,6 @@ torchcodec==0.14.0+cu130
+     # via
+     #   -c requirements/cuda.txt
+     #   -r requirements/test/cuda.in
+-torchvision==0.28.0+cu130
+     # via
+     #   -c requirements/cuda.txt
+     #   -r requirements/test/cuda.in
+diff --git a/requirements/test/xpu.txt b/requirements/test/xpu.txt
+index 60ffa0a..ea3b1b3 100644
+--- a/requirements/test/xpu.txt
++++ b/requirements/test/xpu.txt
+@@ -914,7 +914,6 @@ tokenizers==0.22.2
+     #   -r requirements/test/../common.txt
+     #   sentence-transformers
+     #   transformers
+-torch==2.13.0+xpu
+     # via
+     #   -c requirements/xpu.txt
+     #   accelerate
+@@ -924,7 +923,6 @@ torch==2.13.0+xpu
+     #   timm
+     #   torchvision
+     #   xgrammar
+-torchvision==0.28.0+xpu
+     # via timm
+ tornado==6.5.8
+     # via jupyter-client
+diff --git a/requirements/xpu.txt b/requirements/xpu.txt
+index 13f3f52..f5b63f5 100644
+--- a/requirements/xpu.txt
++++ b/requirements/xpu.txt
+@@ -14,7 +14,6 @@ jinja2>=3.1.6
+ datasets # for benchmark scripts
+ numba == 0.65.0 # Required for N-gram speculative decoding
+ --extra-index-url=https://download.pytorch.org/whl/xpu
+-torch==2.13.0
+ torchaudio
+ torchvision
+ torchcodec >= 0.14 # Required for the torchcodec video decoding backend
